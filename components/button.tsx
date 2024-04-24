@@ -1,16 +1,11 @@
-import Link from "next/link";
-import { UrlObject } from "url";
-
-export default function LinkButton({
-  href,
+export default function Button({
   children,
-  type,
+  styleType,
   disabled,
   size = "normal",
 }: {
-  href: string | UrlObject;
   children: React.ReactNode;
-  type: "basic" | "point" | "active";
+  styleType: "basic" | "point" | "active";
   size?: "normal" | "large";
   disabled?: boolean;
 }) {
@@ -27,14 +22,13 @@ export default function LinkButton({
     "text-white bg-gray-400 border-gray-400 cursor-not-allowed";
 
   return (
-    <Link href={href}>
-      <span
-        className={`flex items-center justify-center text-center font-bold rounded-full border ${
-          sizes[size]
-        } ${colors[type]} ${disabled && disabledStyle}`}
-      >
-        {children}
-      </span>
-    </Link>
+    <button
+      className={`w-full font-bold rounded-full border ${sizes[size]} ${
+        colors[styleType]
+      } ${disabled && disabledStyle}`}
+      disabled={disabled}
+    >
+      {children}
+    </button>
   );
 }

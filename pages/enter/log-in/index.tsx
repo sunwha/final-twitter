@@ -1,12 +1,27 @@
-import BottonBox from "@components/bottonbox";
 import Header from "@components/header";
 import Input from "@components/input";
 import LinkButton from "@components/link-button";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import Enter from "..";
+import EnterPassword from "./EnterPassword";
+import Button from "@components/button";
+
+interface IEmailForm {
+  userEmail: string;
+}
 
 export default function LogIn() {
   const [email, setEmail] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, dirtyFields, isValid },
+  } = useForm<IEmailForm>({ mode: "onChange" });
+  const onEmailValid = (data: IEmailForm) => {
+    setEmail(data.userEmail);
+  };
   return !email ? (
     <section>
       <Header back={true} />
@@ -18,12 +33,22 @@ export default function LogIn() {
           Sign in with GitHub
         </LinkButton>
         <span className="py-2 block text-center text-sm text-gray-600">or</span>
-        <Input type="text" name="email" />
-        <div className="pt-6">
-          <LinkButton href="/" type="point">
-            Next
-          </LinkButton>
-        </div>
+        <form onSubmit={handleSubmit(onEmailValid)}>
+          <Input
+            type="email"
+            name="userEmail"
+            label="Email"
+            register={register}
+            errors={errors}
+            isDirty={dirtyFields.userEmail}
+            required
+          />
+          <div className="pt-6">
+            <Button styleType="point" disabled={!isValid}>
+              Next
+            </Button>
+          </div>
+        </form>
         <div className="pt-6">
           <LinkButton href="/" type="basic">
             Forget password?
@@ -40,35 +65,6 @@ export default function LogIn() {
       </section>
     </section>
   ) : (
-    <section>
-      <Header back={true} />
-      <section className="pt-4">
-        <h2 className="pb-7 text-2xl font-bold">Enter your password</h2>
-        <ul>
-          <li className="pt-6">
-            <Input type="text" name="email" value={email} disabled />
-          </li>
-          <li className="pt-6">
-            <Input type="password" name="password" />
-            <p className="text-xs pt-1">
-              <a href="" className="text-blue-600">
-                Forgot password?
-              </a>
-            </p>
-          </li>
-        </ul>
-        <BottonBox>
-          <LinkButton href="/" type="point" size="large" disabled={true}>
-            Log in
-          </LinkButton>
-          <p className="text-gray-600 text-sm pt-5">
-            Don't have an account?{" "}
-            <Link href="/enter/sign-up">
-              <span className="text-blue-600">Sign up</span>
-            </Link>
-          </p>
-        </BottonBox>
-      </section>
-    </section>
+    <EnterPassword email={email} />
   );
 }
