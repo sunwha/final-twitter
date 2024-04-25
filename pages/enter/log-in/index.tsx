@@ -2,17 +2,19 @@ import Header from "@components/header";
 import Input from "@components/input";
 import LinkButton from "@components/link-button";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Enter from "..";
 import EnterPassword from "./EnterPassword";
 import Button from "@components/button";
+import useMutation from "lib/client/useMutation";
 
 interface IEmailForm {
   userEmail: string;
 }
 
 export default function LogIn() {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [check, { loading, data, error }] = useMutation("/api/user/check");
   const [email, setEmail] = useState("");
   const {
     register,
@@ -20,8 +22,15 @@ export default function LogIn() {
     formState: { errors, dirtyFields, isValid },
   } = useForm<IEmailForm>({ mode: "onChange" });
   const onEmailValid = (data: IEmailForm) => {
-    setEmail(data.userEmail);
+    check(data);
   };
+  useEffect(() => {
+    if (data?.ok && !loading) {
+      setEmail(data.userEmail);
+    } else if (data?.message && !loading) {
+      setErrorMessage(data?.message || "Something went wrong");
+    }
+  }, [data, email]);
   return !email ? (
     <section>
       <Header back={true} />
@@ -43,6 +52,9 @@ export default function LogIn() {
             isDirty={dirtyFields.userEmail}
             required
           />
+          {errorMessage && (
+            <p className="pt-4 text-red-500 text-center">{errorMessage}</p>
+          )}
           <div className="pt-6">
             <Button styleType="point" disabled={!isValid}>
               Next

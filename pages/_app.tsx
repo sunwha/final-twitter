@@ -1,7 +1,7 @@
 import Layout from "@components/layout";
-import Head from "next/head";
 import { SWRConfig } from "swr";
 import "../global.css";
+import Head from "next/head";
 
 export default function App({ Component, pageProps }: any) {
   return (

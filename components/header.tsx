@@ -3,9 +3,11 @@ import Link from "next/link";
 export default function Header({
   back = false,
   mypage = false,
+  user,
 }: {
   back?: boolean;
   mypage?: boolean;
+  user?: string;
 }) {
   return (
     <header className="p-2 flex justify-center items-center top-0 mt-[-2rem]">
@@ -33,7 +35,7 @@ export default function Header({
         </button>
       )}
       {mypage && (
-        <Link aria-label="my page" href={`/tweet/id`}>
+        <Link aria-label="my page" href={`/tweet/${user}`}>
           <span className="absolute left-4">
             <svg
               className="w-7 h-7"

@@ -9,3 +9,32 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
+model User {
+  id       Int   @id @default(autoincrement())
+  email    String   @unique
+  name     String   
+  password String
+  posts    Post[]
+  tokens   Token[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        Int   @id @default(autoincrement())
+  title     String
+  content   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Token {
+  id        Int   @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

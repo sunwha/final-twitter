@@ -4,6 +4,9 @@ import Header from "@components/header";
 import Link from "next/link";
 import Input from "@components/input";
 import { useForm } from "react-hook-form";
+import useMutation from "lib/client/useMutation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 interface ILoginForm {
   userEmail: string;
@@ -11,15 +14,26 @@ interface ILoginForm {
 }
 
 export default function EnterPassword({ email }: { email: string }) {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [login, { loading, data, error }] = useMutation("/api/user/login");
+  const router = useRouter();
   const {
     register,
     trigger,
     handleSubmit,
-    formState: { errors, dirtyFields, isValid },
+    formState: { errors, dirtyFields, isValid, isDirty },
   } = useForm<ILoginForm>({ mode: "onChange" });
   const onValid = (data: ILoginForm) => {
-    console.log(data);
+    if (loading) return;
+    login(data);
   };
+  useEffect(() => {
+    if (data?.ok && !loading) {
+      router.push("/");
+    } else if (data?.message && !loading) {
+      setErrorMessage(data?.message || "Something went wrong");
+    }
+  }, [data, router]);
   return (
     <section>
       <Header back={true} />
@@ -57,7 +71,11 @@ export default function EnterPassword({ email }: { email: string }) {
             </li>
           </ul>
           <BottonBox>
-            <Button styleType="point" size="large" disabled={!isValid}>
+            <Button
+              styleType="point"
+              size="large"
+              disabled={!isDirty || !isValid}
+            >
               Log in
             </Button>
             <p className="text-gray-600 text-sm pt-5">

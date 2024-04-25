@@ -2,6 +2,9 @@ import BottonBox from "@components/bottonbox";
 import Button from "@components/button";
 import Header from "@components/header";
 import Input from "@components/input";
+import useMutation from "lib/client/useMutation";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface IFormInput {
@@ -10,14 +13,25 @@ interface IFormInput {
   createPassword: string;
 }
 export default () => {
+  const [create, { loading, data, error }] = useMutation("/api/user/create");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields, isValid, isDirty },
   } = useForm<IFormInput>({ mode: "onChange" });
   const onValid = (data: IFormInput) => {
-    console.log(data);
+    if (loading) return;
+    create(data);
   };
+  useEffect(() => {
+    if (data?.ok && !loading) {
+      router.push("/enter/log-in");
+    } else if (data?.message && !loading) {
+      setErrorMessage(data?.message || "Something went wrong");
+    }
+  }, [data, router]);
   return (
     <section>
       <Header back={true} />
@@ -61,10 +75,17 @@ export default () => {
             </li>
           </ul>
           <BottonBox>
-            <Button styleType="point" size="large" disabled={true}>
-              Next
+            <Button
+              styleType="point"
+              size="large"
+              disabled={!isDirty || !isValid}
+            >
+              Create Account
             </Button>
           </BottonBox>
+          {errorMessage && (
+            <p className="pt-4 text-red-500 text-center">{errorMessage}</p>
+          )}
         </form>
       </section>
     </section>
