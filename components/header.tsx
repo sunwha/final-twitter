@@ -10,7 +10,7 @@ export default function Header({
   user?: string;
 }) {
   return (
-    <header className="p-2 flex justify-center items-center top-0 mt-[-2rem]">
+    <header className="sticky left-0 right-0 top-0 p-2 flex justify-center items-center bg-white mt-[-2rem] mx-[-2rem]">
       {back && (
         <button
           className="absolute left-4"

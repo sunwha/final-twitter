@@ -6,7 +6,7 @@ export default function Button({
 }: {
   children: React.ReactNode;
   styleType: "basic" | "point" | "active";
-  size?: "normal" | "large";
+  size?: "small" | "normal" | "large";
   disabled?: boolean;
 }) {
   const colors = {
@@ -15,6 +15,7 @@ export default function Button({
     active: "text-white bg-black border-black",
   };
   const sizes = {
+    small: "w-20 h-8 text-sm",
     normal: "h-10 text-sm",
     large: "h-12",
   };

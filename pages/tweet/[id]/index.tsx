@@ -37,7 +37,7 @@ export default () => {
       router.push("/enter");
     }
   }, [data, error, loading]);
-  if (user) console.log(user);
+  if (user) console.log(user.posts);
   return (
     !isLoading && (
       <>
@@ -73,7 +73,7 @@ export default () => {
             <span>Joined {formatDate(user.createdAt)}</span>
           </div>
           <p className="pt-4 text-xs">
-            <strong>2</strong> posts
+            <strong>{user.posts.length}</strong> posts
           </p>
         </div>
         <TweetList>

@@ -13,6 +13,7 @@ async function handler(
       name: true,
       email: true,
       createdAt: true,
+      posts: true,
     },
   });
   res.status(200).json({ ok: true, profile });
