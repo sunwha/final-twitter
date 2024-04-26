@@ -1,35 +1,53 @@
 import Header from "@components/header";
 import Tweet from "@components/tweet";
 import TweetList from "@components/tweetlist";
+import useMutation from "lib/client/useMutation";
 import useUser from "lib/client/useUser";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import getTimeElapsedSince from "utils/getTimeElapsedSince";
 
 /**
  * 로그인 여부를 확인하여 로그인이 되어있다면 홈페이지를 그렇지 않다면 계정 생성 / 로그인 페이지로 이동하세요.
  * 로그인이 완료되었을 경우, 사용자는 데이터베이스에 존재하는 모든 트윗을 볼 수 있어야 합니다.
  * 또한 트윗을 작성할 수 있어야 합니다.
  */
+
+interface IPost {
+  id: number;
+  userName: string;
+  content: string;
+  createdAt: string;
+}
 export default () => {
   const { user, isLoading } = useUser();
-  const data = [
-    {
-      username: "Wall street boy",
-      comment:
-        "What would you say is the biggest problem facing our country right now?",
-      date: "2024-04-25",
-    },
-  ];
+  const [read, { loading, data, error }] = useMutation("/api/post/read");
+  const [listData, setListData] = useState([]);
+  useEffect(() => {
+    read();
+  }, []);
+  useEffect(() => {
+    if (data?.ok && !loading) {
+      const listData = data.postsWithUserNames;
+      const sortedData = listData.sort((a: IPost, b: IPost) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+      setListData(sortedData);
+    }
+  }, [data]);
   return (
     !isLoading && (
       <>
         <Header mypage={true} user={user && user.name} />
         <TweetList>
-          {data.map((tweet, index) => (
+          {listData.map((tweet: IPost) => (
             <Tweet
-              key={index + tweet.username}
-              name={tweet.username}
-              comment={tweet.comment}
-              date={tweet.date}
+              key={tweet.id}
+              name={tweet.userName}
+              comment={tweet.content}
+              date={getTimeElapsedSince(tweet.createdAt)}
             />
           ))}
         </TweetList>

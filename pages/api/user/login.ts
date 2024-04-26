@@ -15,16 +15,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       password: true,
     },
   });
-  const ok = await bcrypt.compare(userPassword, isUser.password);
-  if (!ok) {
-    return res.status(400).json({ ok: false, message: "User not found" });
-  } else {
-    req.session.user = {
-      id: isUser.id,
-    };
-    console.log(req.session);
-    await req.session.save();
-    return res.status(200).json({ ok: true });
+  if (isUser) {
+    const ok = await bcrypt.compare(userPassword, isUser.password);
+    if (!ok) {
+      return res.status(400).json({ ok: false, message: "User not found" });
+    } else {
+      req.session.user = {
+        id: isUser.id,
+      };
+      await req.session.save();
+      return res.status(200).json({ ok: true });
+    }
   }
 }
 

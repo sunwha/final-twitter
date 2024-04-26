@@ -2,7 +2,7 @@ export default function Button({
   children,
   styleType,
   disabled,
-  size = "normal",
+  size = "large",
 }: {
   children: React.ReactNode;
   styleType: "basic" | "point" | "active";
@@ -17,14 +17,14 @@ export default function Button({
   const sizes = {
     small: "w-20 h-8 text-sm",
     normal: "h-10 text-sm",
-    large: "h-12",
+    large: "w-full h-12",
   };
   const disabledStyle =
     "text-white bg-gray-400 border-gray-400 cursor-not-allowed";
 
   return (
     <button
-      className={`w-full font-bold rounded-full border ${sizes[size]} ${
+      className={`font-bold rounded-full border ${sizes[size]} ${
         colors[styleType]
       } ${disabled && disabledStyle}`}
       disabled={disabled}

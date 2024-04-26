@@ -1,5 +1,8 @@
 import Button from "@components/button";
 import LinkButton from "@components/link-button";
+import useMutation from "lib/client/useMutation";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface IContent {
@@ -7,10 +10,19 @@ interface IContent {
 }
 
 export default function Post() {
+  const [write, { loading, data, error }] = useMutation("/api/post/write");
   const { register, handleSubmit } = useForm<IContent>();
+  const router = useRouter();
   const onVaild = (data: IContent) => {
-    console.log(data);
+    if (loading) return;
+    write(data);
   };
+  useEffect(() => {
+    if (data && data.ok) {
+      router.push("/");
+    }
+  }, [data, router]);
+
   return (
     <form onSubmit={handleSubmit(onVaild)} className="flex flex-col">
       <div className="flex justify-between mt-[-1rem] mx-[-1rem]">

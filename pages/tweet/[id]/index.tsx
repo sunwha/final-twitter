@@ -4,40 +4,49 @@ import TweetList from "@components/tweetlist";
 import useMutation from "lib/client/useMutation";
 import useUser from "lib/client/useUser";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import capitalizeFirstLetter from "utils/capitalizeFirstLetter";
 import { formatDate } from "utils/formatDate";
+import getTimeElapsedSince from "utils/getTimeElapsedSince";
 
 /**
  * 사용자는 id에 해당하는 트윗의 내용과 좋아요 버튼을 볼 수 있어야 합니다.
  * 좋아요버튼을 클릭했 을 경우 좋아요의 상태값이 데이터베이스에 저장되어야 하며
  * useSWR의 mutate를 사용하여 업데이트를 반영해야 합니다.
  */
+interface IPost {
+  id: number;
+  userName: string;
+  content: string;
+  createdAt: string;
+}
 export default () => {
-  const dataa = [
-    {
-      username: "Wall street boy",
-      comment:
-        "What would you say is the biggest problem facing our country right now?",
-    },
-    {
-      username: "Wall street boy",
-      comment:
-        "What would you say is the biggest problem facing our country right now?",
-    },
-  ];
-  const [logout, { data, error, loading }] = useMutation("/api/user/out");
+  const [listData, setListData] = useState([]);
+  const [logout, { data: outData, error: outError, loading: outLoading }] =
+    useMutation("/api/user/out");
+  // const [userPost, { data: userData, error: userError, loading: userLoading }] =
+  //   useMutation("/api/post/user");
   const { user, isLoading } = useUser();
   const router = useRouter();
   const onLogout = async () => {
     await logout();
   };
   useEffect(() => {
-    if (data?.ok && !loading) {
+    if (outData?.ok && !outLoading) {
       router.push("/enter");
     }
-  }, [data, error, loading]);
-  if (user) console.log(user.posts);
+  }, [outData, outError, outLoading]);
+  useEffect(() => {
+    if (user) {
+      const listData = user.posts;
+      const sortedData = listData.sort((a: IPost, b: IPost) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+      setListData(sortedData);
+    }
+  }, []);
   return (
     !isLoading && (
       <>
@@ -73,15 +82,16 @@ export default () => {
             <span>Joined {formatDate(user.createdAt)}</span>
           </div>
           <p className="pt-4 text-xs">
-            <strong>{user.posts.length}</strong> posts
+            <strong>{listData.length}</strong> posts
           </p>
         </div>
         <TweetList>
-          {dataa.map((tweet, index) => (
+          {listData.map((tweet: IPost) => (
             <Tweet
-              key={index + tweet.username}
-              name={tweet.username}
-              comment={tweet.comment}
+              key={tweet.id}
+              name={tweet.userName}
+              comment={tweet.content}
+              date={getTimeElapsedSince(tweet.createdAt)}
             />
           ))}
         </TweetList>
