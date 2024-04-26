@@ -24,8 +24,6 @@ export default () => {
   const [listData, setListData] = useState([]);
   const [logout, { data: outData, error: outError, loading: outLoading }] =
     useMutation("/api/user/out");
-  // const [userPost, { data: userData, error: userError, loading: userLoading }] =
-  //   useMutation("/api/post/user");
   const { user, isLoading } = useUser();
   const router = useRouter();
   const onLogout = async () => {
@@ -88,6 +86,8 @@ export default () => {
         <TweetList>
           {listData.map((tweet: IPost) => (
             <Tweet
+              mine={tweet.userName === user.name}
+              like={false}
               key={tweet.id}
               name={tweet.userName}
               comment={tweet.content}

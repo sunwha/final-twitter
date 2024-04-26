@@ -44,6 +44,8 @@ export default () => {
         <TweetList>
           {listData.map((tweet: IPost) => (
             <Tweet
+              mine={tweet.userName === user.name}
+              like={false}
               key={tweet.id}
               name={tweet.userName}
               comment={tweet.content}
