@@ -7,22 +7,26 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const profile = await db.user.findUnique({
-    where: { id: req.session.user.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-      posts: true,
+  const { postId, userId } = req.body;
+
+  const newLike = db.like.create({
+    data: {
+      postId: +postId,
+      userId: +userId,
     },
   });
-  res.status(200).json({ ok: true, profile });
+
+  await db.post.update({
+    where: { id: +postId },
+    data: { likes: { connect: { id: (await newLike).id } } },
+  });
+  return res.status(200).json({ ok: true });
 }
 
 export default withApiSession(
   withHandler({
-    method: "GET",
+    method: "POST",
     handler,
+    isPrivate: true,
   })
 );

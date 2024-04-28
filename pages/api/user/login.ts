@@ -1,8 +1,8 @@
-import withHandler from "lib/server/withHandler";
-import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import withApiSession from "lib/server/withSession";
 import db from "lib/server/db";
+import withHandler from "lib/server/withHandler";
+import withApiSession from "lib/server/withSession";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { userEmail, userPassword } = req.body;
@@ -18,7 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (isUser) {
     const ok = await bcrypt.compare(userPassword, isUser.password);
     if (!ok) {
-      return res.status(400).json({ ok: false, message: "User not found" });
+      return res.status(400).json({ ok: false, message: "Invalid password" });
     } else {
       req.session.user = {
         id: isUser.id,

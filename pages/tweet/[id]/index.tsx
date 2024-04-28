@@ -16,9 +16,10 @@ import getTimeElapsedSince from "utils/getTimeElapsedSince";
  */
 interface IPost {
   id: number;
-  userName: string;
+  userName?: string;
   content: string;
   createdAt: string;
+  userId: number;
 }
 export default () => {
   const [listData, setListData] = useState([]);
@@ -44,7 +45,7 @@ export default () => {
       });
       setListData(sortedData);
     }
-  }, []);
+  }, [user]);
   return (
     !isLoading && (
       <>
@@ -86,8 +87,9 @@ export default () => {
         <TweetList>
           {listData.map((tweet: IPost) => (
             <Tweet
-              mine={tweet.userName === user.name}
-              like={false}
+              postId={tweet.id}
+              mine={tweet.userId === user.id}
+              userId={user.id}
               key={tweet.id}
               name={tweet.userName}
               comment={tweet.content}

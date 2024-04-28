@@ -1,5 +1,6 @@
 import Header from "@components/header";
 import LinkButton from "@components/link-button";
+import Terms from "@components/terms";
 import Link from "next/link";
 
 export default () => (
@@ -10,28 +11,14 @@ export default () => (
         <h2 className="pb-6 text-2xl font-extrabold tracking-widest">
           Join Today.
         </h2>
-        <LinkButton href="/github" type="basic">
+        {/* <LinkButton href="/github" type="basic">
           Sign up with GitHub
         </LinkButton>
-        <span className="py-2 block text-center text-sm text-gray-600">or</span>
+        <span className="py-2 block text-center text-sm text-gray-600">or</span> */}
         <LinkButton href="/create-account" type="point">
           Create account
         </LinkButton>
-        <p className="text-xs pt-1">
-          By signing up, you agree to the{" "}
-          <a href="" className="text-blue-600">
-            Terms of Service
-          </a>{" "}
-          and{" "}
-          <a href="" className="text-blue-600">
-            Privacy Policy
-          </a>
-          , including{" "}
-          <a href="" className="text-blue-600">
-            Cookie Use
-          </a>
-          .
-        </p>
+        <Terms />
       </div>
       <div className="pt-12">
         <p className="text-gray-600 text-sm">

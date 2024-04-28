@@ -7,22 +7,22 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const profile = await db.user.findUnique({
-    where: { id: req.session.user.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-      posts: true,
+  const { postId } = req.query;
+  if (!postId) {
+    return res.status(400).json({ ok: false, message: "id is required" });
+  }
+
+  db.post.delete({
+    where: {
+      id: +postId,
     },
   });
-  res.status(200).json({ ok: true, profile });
+  return res.status(200).json({ ok: true });
 }
-
 export default withApiSession(
   withHandler({
-    method: "GET",
+    method: "DELETE",
     handler,
+    isPrivate: true,
   })
 );

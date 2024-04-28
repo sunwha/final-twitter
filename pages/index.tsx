@@ -18,6 +18,7 @@ interface IPost {
   userName: string;
   content: string;
   createdAt: string;
+  userId: number;
 }
 export default () => {
   const { user, isLoading } = useUser();
@@ -44,9 +45,10 @@ export default () => {
         <TweetList>
           {listData.map((tweet: IPost) => (
             <Tweet
-              mine={tweet.userName === user.name}
-              like={false}
+              mine={tweet.userId === user.id}
+              userId={user.id}
               key={tweet.id}
+              postId={tweet.id}
               name={tweet.userName}
               comment={tweet.content}
               date={getTimeElapsedSince(tweet.createdAt)}

@@ -1,12 +1,13 @@
 import BottonBox from "@components/bottonbox";
 import Button from "@components/button";
 import Header from "@components/header";
-import Link from "next/link";
 import Input from "@components/input";
-import { useForm } from "react-hook-form";
+import Toast from "@components/toast";
 import useMutation from "lib/client/useMutation";
-import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface ILoginForm {
   userEmail: string;
@@ -26,6 +27,7 @@ export default function EnterPassword({ email }: { email: string }) {
   const onValid = (data: ILoginForm) => {
     if (loading) return;
     login(data);
+    setErrorMessage("");
   };
   useEffect(() => {
     if (data?.ok && !loading) {
@@ -63,13 +65,14 @@ export default function EnterPassword({ email }: { email: string }) {
                 required
                 onChange={() => trigger()}
               />
-              <p className="text-xs pt-1">
+              {/* <p className="text-xs pt-1">
                 <a href="" className="text-blue-600">
                   Forgot password?
                 </a>
-              </p>
+              </p> */}
             </li>
           </ul>
+          {errorMessage && <Toast message={errorMessage} />}
           <BottonBox>
             <Button
               styleType="point"
