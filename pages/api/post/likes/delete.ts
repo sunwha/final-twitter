@@ -15,7 +15,7 @@ async function handler(
 
   const post = await db.post.findUnique({
     where: { id: +postId },
-    include: { likes: true }, // 게시물과 관련된 좋아요도 함께 가져옵니다.
+    include: { likes: true },
   });
 
   if (!post) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
 export default function LikeButton({
   postId,
   userId,
